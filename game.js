@@ -11,7 +11,7 @@ const PADDLE_HEIGHT = 100;
 const calculateMousePos = evt => {
   let rect = canvas.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
   let root = document.documentElement; // returns the Element that is the root element of the document (for example, the <html> element for HTML documents).
-  let mouseX = evt.clientX - rect.left - root.scrollLeft; // property gets or sets the number of pixels that an element's content is scrolled from its left edge.
+  let mouseX = evt.clientX - rect.left - root.scrollLeft; // element.scrollLeft property gets or sets the number of pixels that an element's content is scrolled from its left edge.
   let mouseY = evt.clientY - rect.top - root.scrollTop;
   return {
     x: mouseX,
@@ -24,11 +24,16 @@ window.onload = () => {
   canvasContext = canvas.getContext("2d");
 
   let framesPerSecond = 30;
-
   setInterval(() => {
     moveEverything();
     drawEverything();
   }, 1000 / framesPerSecond);
+
+  canvas.addEventListener("mousemove", evt => {
+    let mousePos = calculateMousePos(evt);
+    paddle1Y = mousePos.y - PADDLE_HEIGHT / 2;
+    // console.log(mousePos);
+  });
 };
 
 const moveEverything = () => {
@@ -55,7 +60,7 @@ const drawEverything = () => {
   colorRect(0, 0, canvas.width, canvas.height, "black");
 
   // left paddle
-  colorRect(0, 210, 10, 100, "white");
+  colorRect(0, paddle1Y, 10, PADDLE_HEIGHT, "white");
 
   // draw ball
   colorCircle(ballX, ballY, 10, "white");
@@ -64,7 +69,7 @@ const drawEverything = () => {
 const colorCircle = (centerX, centerY, radius, drawColor) => {
   canvasContext.fillStyle = drawColor;
   canvasContext.beginPath();
-  canvasContext.arc(centerX, centerY, radius, 0, Math.PI * 2, true); // 2 PI Radians = 360 deg
+  canvasContext.arc(centerX, centerY, radius, 0, Math.PI * 2, true); // 2PIRadians = 360 deg
   canvasContext.fill();
 };
 
