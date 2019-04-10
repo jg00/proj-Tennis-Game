@@ -66,6 +66,9 @@ const moveEverything = () => {
   if (ballX < 0) {
     if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
       ballSpeedX = -ballSpeedX;
+
+      let deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
+      ballSpeedY = deltaY * 0.35;
     } else {
       ballReset();
       player2Score++;
@@ -75,6 +78,9 @@ const moveEverything = () => {
   if (ballX > canvas.width) {
     if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
       ballSpeedX = -ballSpeedX;
+
+      let deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
+      ballSpeedY = deltaY * 0.35;
     } else {
       ballReset();
       player1Score++;
