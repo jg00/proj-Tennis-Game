@@ -5,7 +5,12 @@ let ballY = 50;
 let ballSpeedX = 10;
 let ballSpeedY = 4;
 
+let player1Score = 0;
+let player2Score = 0;
+
 let paddle1Y = 250;
+let paddle2Y = 250;
+const PADDLE_THICKNESS = 10;
 const PADDLE_HEIGHT = 100;
 
 const calculateMousePos = evt => {
@@ -36,15 +41,44 @@ window.onload = () => {
   });
 };
 
+const ballReset = () => {
+  ballSpeedX = -ballSpeedX;
+  ballX = canvas.width / 2;
+  ballY = canvas.height / 2;
+};
+
+const computerMovement = () => {
+  let paddle2YCenter = paddle2Y + PADDLE_HEIGHT / 2;
+
+  if (paddle2YCenter < ballY - 35) {
+    paddle2Y += 6;
+  } else if (paddle2YCenter > ballY + 35) {
+    paddle2Y -= 6;
+  }
+};
+
 const moveEverything = () => {
-  ballX = ballX + ballSpeedX;
-  ballY = ballY + ballSpeedY;
+  computerMovement();
+
+  ballX += ballSpeedX;
+  ballY += ballSpeedY;
 
   if (ballX < 0) {
-    ballSpeedX = -ballSpeedX;
+    if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
+      ballSpeedX = -ballSpeedX;
+    } else {
+      ballReset();
+      player2Score++;
+    }
   }
+
   if (ballX > canvas.width) {
-    ballSpeedX = -ballSpeedX;
+    if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
+      ballSpeedX = -ballSpeedX;
+    } else {
+      ballReset();
+      player1Score++;
+    }
   }
 
   if (ballY < 0) {
@@ -59,11 +93,23 @@ const drawEverything = () => {
   // blanks out screen with black
   colorRect(0, 0, canvas.width, canvas.height, "black");
 
-  // left paddle
-  colorRect(0, paddle1Y, 10, PADDLE_HEIGHT, "white");
+  // left player paddle
+  colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+
+  // right computer paddle
+  colorRect(
+    canvas.width - PADDLE_THICKNESS,
+    paddle2Y,
+    PADDLE_THICKNESS,
+    PADDLE_HEIGHT,
+    "white"
+  );
 
   // draw ball
   colorCircle(ballX, ballY, 10, "white");
+
+  canvasContext.fillText(player1Score, 100, 100);
+  canvasContext.fillText(player2Score, canvas.width - 100, 100);
 };
 
 const colorCircle = (centerX, centerY, radius, drawColor) => {
