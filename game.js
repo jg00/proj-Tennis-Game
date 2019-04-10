@@ -7,6 +7,9 @@ let ballSpeedY = 4;
 
 let player1Score = 0;
 let player2Score = 0;
+const WINNING_SCORE = 3;
+
+let showingWinScreen = false;
 
 let paddle1Y = 250;
 let paddle2Y = 250;
@@ -42,6 +45,12 @@ window.onload = () => {
 };
 
 const ballReset = () => {
+  if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
+    player1Score = 0;
+    player2Score = 0;
+    showingWinScreen = true;
+  }
+
   ballSpeedX = -ballSpeedX;
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
@@ -58,6 +67,10 @@ const computerMovement = () => {
 };
 
 const moveEverything = () => {
+  if (showingWinScreen) {
+    return;
+  }
+
   computerMovement();
 
   ballX += ballSpeedX;
@@ -70,8 +83,9 @@ const moveEverything = () => {
       let deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.35;
     } else {
+      player2Score++; // must be before ballReset()
+
       ballReset();
-      player2Score++;
     }
   }
 
@@ -82,8 +96,8 @@ const moveEverything = () => {
       let deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.35;
     } else {
+      player1Score++; // must be before ballReset()
       ballReset();
-      player1Score++;
     }
   }
 
@@ -98,6 +112,12 @@ const moveEverything = () => {
 const drawEverything = () => {
   // blanks out screen with black
   colorRect(0, 0, canvas.width, canvas.height, "black");
+
+  if (showingWinScreen) {
+    canvasContext.fillStyle = "white";
+    canvasContext.fillText("Click to continue", 100, 100);
+    return;
+  }
 
   // left player paddle
   colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
