@@ -1,7 +1,13 @@
+.main-section {
+  width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
 h2 {
-  color: blue;
+  color: black;
 }
 
 #gameCanvas {
-  border: 1px solid blue;
+  border: 1px solid orangered;
 }

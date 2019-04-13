@@ -2,12 +2,12 @@ let canvas;
 let canvasContext;
 let ballX = 50;
 let ballY = 50;
-let ballSpeedX = 10;
-let ballSpeedY = 4;
+let ballSpeedX = 9;
+let ballSpeedY = 3;
 
 let player1Score = 0;
 let player2Score = 0;
-const WINNING_SCORE = 3;
+const WINNING_SCORE = 7;
 
 let showingWinScreen = false;
 
@@ -27,6 +27,14 @@ const calculateMousePos = evt => {
   };
 };
 
+const handleMouseClick = evt => {
+  if (showingWinScreen) {
+    player1Score = 0;
+    player2Score = 0;
+    showingWinScreen = false;
+  }
+};
+
 window.onload = () => {
   canvas = document.getElementById("gameCanvas");
   canvasContext = canvas.getContext("2d");
@@ -37,17 +45,16 @@ window.onload = () => {
     drawEverything();
   }, 1000 / framesPerSecond);
 
+  canvas.addEventListener("mousedown", handleMouseClick);
+
   canvas.addEventListener("mousemove", evt => {
     let mousePos = calculateMousePos(evt);
     paddle1Y = mousePos.y - PADDLE_HEIGHT / 2;
-    // console.log(mousePos);
   });
 };
 
 const ballReset = () => {
   if (player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE) {
-    player1Score = 0;
-    player2Score = 0;
     showingWinScreen = true;
   }
 
@@ -109,15 +116,30 @@ const moveEverything = () => {
   }
 };
 
+const drawNet = () => {
+  for (let i = 0; i < canvas.height; i += 40) {
+    colorRect(canvas.width / 2 - 1, i, 2, 20, "white");
+  }
+};
+
 const drawEverything = () => {
   // blanks out screen with black
   colorRect(0, 0, canvas.width, canvas.height, "black");
 
   if (showingWinScreen) {
     canvasContext.fillStyle = "white";
-    canvasContext.fillText("Click to continue", 100, 100);
+
+    if (player1Score >= WINNING_SCORE) {
+      canvasContext.fillText("Winner: Player 1", 350, 200);
+    } else if (player2Score >= WINNING_SCORE) {
+      canvasContext.fillText("Winner: Player 2", 350, 200);
+    }
+
+    canvasContext.fillText("Click to continue", 350, 400);
     return;
   }
+
+  drawNet();
 
   // left player paddle
   colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
